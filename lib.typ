@@ -1,7 +1,7 @@
-#import "@preview/codelst:2.0.1": *
-#import "acronym-lib.typ": init-acronyms, print-acronyms, acr, acrpl, acrs, acrspl, acrl, acrlpl, acrf, acrfpl
-#import "glossary-lib.typ": init-glossary, print-glossary, gls
-#import "locale.typ": TABLE_OF_CONTENTS, LIST_OF_FIGURES, LIST_OF_TABLES, CODE_SNIPPETS, APPENDIX, REFERENCES
+#import "@preview/codelst:2.0.2": *
+#import "acronym-lib.typ": acr, acrf, acrfpl, acrl, acrlpl, acrpl, acrs, acrspl, init-acronyms, print-acronyms
+#import "glossary-lib.typ": gls, init-glossary, print-glossary
+#import "locale.typ": APPENDIX, CODE_SNIPPETS, LIST_OF_FIGURES, LIST_OF_TABLES, REFERENCES, TABLE_OF_CONTENTS
 #import "titlepage.typ": *
 #import "confidentiality-statement.typ": *
 #import "declaration-of-authorship.typ": *
@@ -58,6 +58,7 @@
   acronym-spacing: 5em,
   glossary-spacing: 1.5em,
   abstract: none,
+  kurzfassung: none,
   appendix: none,
   acronyms: none,
   glossary: none,
@@ -141,8 +142,8 @@
   }
 
   // save heading and body font families in variables
-  let body-font = "Open Sans"
-  let heading-font = "Montserrat"
+  let body-font = "Arial"
+  let heading-font = "Arial"
 
   // customize look of figure
   set figure.caption(separator: [ --- ], position: bottom)
@@ -376,7 +377,9 @@
   set par(justify: true, leading: 1em)
 
   if (show-abstract and abstract != none) {
-    align(center + horizon, heading(level: 1, numbering: none, outlined: false)[Abstract])
+    align(center + top, heading(level: 1, numbering: none, outlined: false)[Kurzfassung])
+    text(kurzfassung)
+    align(center + top, heading(level: 2, numbering: none, outlined: false)[Abstract])
     text(abstract)
   }
 
@@ -390,6 +393,8 @@
     )
   }
 
+  heading(level: 1, numbering: none, outlined: true)[Abbildungsverzeichnis]
+  counter(page).update(3)
   context {
     let elems = query(figure.where(kind: image))
     let count = elems.len()
@@ -402,6 +407,7 @@
     }
   }
 
+
   context {
     let elems = query(figure.where(kind: table))
     let count = elems.len()
@@ -413,7 +419,8 @@
       )
     }
   }
-
+  heading(level: 1, numbering: none, outlined: true)[Codeverzeichnis]
+  counter(page).update(4)
   context {
     let elems = query(figure.where(kind: raw))
     let count = elems.len()
@@ -422,10 +429,13 @@
       outline(
         title: CODE_SNIPPETS.at(language),
         target: figure.where(kind: raw),
+        depth: 1,
       )
     }
   }
 
+  heading(level: 1, numbering: none, outlined: true)[Abkürzungsverzeichnis]
+  counter(page).update(5)
   if (show-acronyms and acronyms != none and acronyms.len() > 0) {
     print-acronyms(language, acronym-spacing)
   }
@@ -434,6 +444,21 @@
     print-glossary(language, glossary-spacing)
   }
 
+  heading(level: 1, numbering: none, outlined: true)[Formelgrößen und Einheiten]
+  table(
+    columns: (2fr, 2fr, 5fr),
+    align: (left, center, left),
+    stroke: none,
+    table.header([Formelgröße], [Einheit], [Beschreibung]),
+    // entfernt die Randlinien
+    [], [], [],
+    [$b$], [°C], [Achsenabschnitt],
+    [$e$], [°C], [Messabweichung],
+    [$m$], [-], [Steigung],
+    [$T$], [°C], [Temperatur],
+    [$x$], [°C], [Messwert],
+    [$y$], [°C], [korrigierter Messwert],
+  )
   [#metadata(none)<numbering-preface-end>]
 
   set par(leading: 1em, spacing: 2em)
@@ -492,7 +517,7 @@
       )
     },
   )
-  counter(page).update(1)
+  counter(page).update(8)
 
   // Display bibliography.
   if bibliography != none {
