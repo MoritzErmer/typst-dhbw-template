@@ -1,4 +1,4 @@
-#import "@preview/supercharged-dhbw:3.4.1": *
+#import "../lib.typ": *
 #import "acronyms.typ": acronyms
 #import "glossary.typ": glossary
 

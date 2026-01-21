@@ -2,7 +2,7 @@
   context {
     let list = state.get()
     if element not in list {
-      panic(element + " is not a key in the " + dict-type + " dictionary.")
+      panic(str(element) + " is not a key in the " + str(dict-type) + " dictionary.")
       return false
     }
   }
@@ -12,7 +12,7 @@
 
 #let display-link(dict-type, state, element, text) = {
   if is-in-dict(dict-type, state, element) {
-    link(label(dict-type + "-" + element), text)
+    link(label(str(dict-type) + "-" + str(element)), text)
   }
 }
 
